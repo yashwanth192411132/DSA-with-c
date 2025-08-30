@@ -1,0 +1,84 @@
+#include <stdio.h>
+#define MAX 100
+
+int stack[MAX];
+int top = -1;
+
+// Insert (Push)
+void in(int val) {
+    if (top == MAX - 1) {
+        printf("Stack Overflow\n");
+        return;
+    }
+    stack[++top] = val;
+    printf("Inserted: %d\n", val);
+}
+
+// Delete (Pop)
+void del() {
+    if (top == -1) {
+        printf("Stack Underflow\n");
+        return;
+    }
+    printf("Deleted: %d\n", stack[top--]);
+}
+
+// Display Stack
+void disp() {
+    if (top == -1) {
+        printf("Stack is empty\n");
+        return;
+    }
+    printf("Stack contents: ");
+    for (int i = top; i >= 0; i--)
+        printf("%d ", stack[i]);
+    printf("\n");
+}
+
+// Application: Reverse a number using stack
+void app_reverseNumber(int num) {
+    printf("\nApplication: Reversing number %d using stack:\n", num);
+    // Push digits into stack
+    while (num > 0) {
+        in(num % 10);
+        num /= 10;
+    }
+    // Pop digits to form reversed number
+    printf("Reversed number: ");
+    while (top != -1)
+        printf("%d", stack[top--]);
+    printf("\n");
+}
+
+// Main Menu
+int main() {
+    int choice, val;
+
+    while (1) {
+        printf("\n1. Insert\n2. Delete\n3. Display\n4. Reverse Number (App)\n5. Exit\nEnter choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                printf("Enter value: ");
+                scanf("%d", &val);
+                in(val);
+                break;
+            case 2:
+                del();
+                break;
+            case 3:
+                disp();
+                break;
+            case 4:
+                printf("Enter number to reverse: ");
+                scanf("%d", &val);
+                app_reverseNumber(val);
+                break;
+            case 5:
+                return 0;
+            default:
+                printf("Invalid choice\n");
+        }
+    }
+}
