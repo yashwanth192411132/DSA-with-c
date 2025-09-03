@@ -1,0 +1,33 @@
+#include <stdio.h>
+
+int main() {
+    int n, i, search, flag = 0;
+
+    printf("Enter number of students: ");
+    scanf("%d", &n);
+
+    int regno[n];  // Array to store registration numbers
+
+    printf("Enter %d registration numbers:\n", n);
+    for(i = 0; i < n; i++) {
+        scanf("%d", &regno[i]);
+    }
+
+    printf("Enter registration number to search: ");
+    scanf("%d", &search);
+
+    // Linear search
+    for(i = 0; i < n; i++) {
+        if(regno[i] == search) {
+            printf("Registration number %d found at position %d\n", search, i+1);
+            flag = 1;
+            break;
+        }
+    }
+
+    if(flag == 0) {
+        printf("Registration number %d not found.\n", search);
+    }
+
+    return 0;
+}
