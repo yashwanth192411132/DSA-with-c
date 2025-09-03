@@ -1,0 +1,127 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX 100
+
+// Queue structure
+struct Queue {
+    int data[MAX];
+    int front, rear;
+};
+
+// Initialize queue
+void initQueue(struct Queue* q) {
+    q->front = q->rear = -1;
+}
+
+// Check if queue is empty
+int isEmpty(struct Queue* q) {
+    return q->front == -1;
+}
+
+// Enqueue
+void enqueue(struct Queue* q, int val) {
+    if (q->rear == MAX - 1) {
+        printf("Queue overflow\n");
+        return;
+    }
+    if (q->front == -1) q->front = 0;
+    q->data[++q->rear] = val;
+}
+
+// Dequeue
+int dequeue(struct Queue* q) {
+    if (isEmpty(q)) {
+        printf("Queue underflow\n");
+        return -1;
+    }
+    int val = q->data[q->front];
+    if (q->front == q->rear) // Only one element
+        q->front = q->rear = -1;
+    else
+        q->front++;
+    return val;
+}
+
+// Stack using two queues
+struct Stack {
+    struct Queue q1, q2;
+};
+
+// Initialize stack
+void initStack(struct Stack* s) {
+    initQueue(&s->q1);
+    initQueue(&s->q2);
+}
+
+// Push operation (O(1))
+void push(struct Stack* s, int x) {
+    enqueue(&s->q1, x);
+}
+
+// Pop operation (O(n))
+int pop(struct Stack* s) {
+    if (isEmpty(&s->q1)) {
+        printf("Stack is empty\n");
+        return -1;
+    }
+
+    // Move all elements except the last to q2
+    while (s->q1.front != s->q1.rear) {
+        int val = dequeue(&s->q1);
+        enqueue(&s->q2, val);
+    }
+
+    // Last element is the top of the stack
+    int popped = dequeue(&s->q1);
+
+    // Swap q1 and q2
+    struct Queue temp = s->q1;
+    s->q1 = s->q2;
+    s->q2 = temp;
+
+    return popped;
+}
+
+// Peek top of stack
+int top(struct Stack* s) {
+    if (isEmpty(&s->q1)) {
+        printf("Stack is empty\n");
+        return -1;
+    }
+
+    int topElement;
+
+    while (s->q1.front != s->q1.rear) {
+        int val = dequeue(&s->q1);
+        enqueue(&s->q2, val);
+    }
+
+    topElement = dequeue(&s->q1);
+    enqueue(&s->q2, topElement);
+
+    // Swap q1 and q2
+    struct Queue temp = s->q1;
+    s->q1 = s->q2;
+    s->q2 = temp;
+
+    return topElement;
+}
+
+int main() {
+    struct Stack s;
+    initStack(&s);
+
+    push(&s, 10);
+    push(&s, 20);
+    push(&s, 30);
+
+    printf("Top: %d\n", top(&s));      // 30
+    printf("Popped: %d\n", pop(&s));   // 30
+    printf("Popped: %d\n", pop(&s));   // 20
+    printf("Top: %d\n", top(&s));      // 10
+    printf("Popped: %d\n", pop(&s));   // 10
+    printf("Popped: %d\n", pop(&s));   // Stack is empty
+
+    return 0;
+}
